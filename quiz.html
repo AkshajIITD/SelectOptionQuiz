@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #quiz-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .option {
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background-color: #eee;
+        }
+
+        .selected {
+            background-color: #ddd;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <button onclick="checkAnswer()">Submit Answer</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "What is the capital of France?",
+            options: ["Paris", "Berlin", "Madrid", "Rome"],
+            correctAnswer: "Paris"
+        },
+        {
+            question: "Which programming language is this quiz written in?",
+            options: ["Java", "Python", "JavaScript", "C++"],
+            correctAnswer: "JavaScript"
+        },
+        // Add more questions as needed
+    ];
+
+    let currentQuestion = 0;
+    let userScore = 0;
+
+    function loadQuestion() {
+        const questionElement = document.getElementById("question");
+        const optionsElement = document.getElementById("options");
+
+        questionElement.textContent = questions[currentQuestion].question;
+
+        optionsElement.innerHTML = "";
+        questions[currentQuestion].options.forEach((option, index) => {
+            const optionElement = document.createElement("div");
+            optionElement.className = "option";
+            optionElement.textContent = `${index + 1}. ${option}`;
+            optionElement.onclick = () => selectOption(index);
+            optionsElement.appendChild(optionElement);
+        });
+    }
+
+    function selectOption(selectedIndex) {
+        const options = document.getElementsByClassName("option");
+
+        for (let i = 0; i < options.length; i++) {
+            options[i].classList.remove("selected");
+        }
+
+        options[selectedIndex].classList.add("selected");
+    }
+
+    function checkAnswer() {
+        const selectedOption = document.querySelector(".option.selected");
+        if (selectedOption) {
+            const selectedAnswer = selectedOption.textContent.trim().slice(3); // Extract the selected answer text
+            const correctAnswer = questions[currentQuestion].correctAnswer;
+
+            if (selectedAnswer === correctAnswer) {
+                userScore++;
+            }
+
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        } else {
+            alert("Please select an answer before submitting.");
+        }
+    }
+
+    function showResult() {
+        const resultElement = document.getElementById("result");
+        resultElement.textContent = `Your score is ${userScore} out of ${questions.length}.`;
+    }
+
+    // Initial load
+    loadQuestion();
+</script>
+
+</body>
+</html>
